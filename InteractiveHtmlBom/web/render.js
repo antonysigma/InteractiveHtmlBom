@@ -408,6 +408,21 @@ function drawFootprints(canvas, layer, scalefactor, highlight) {
   }
 }
 
+var image_cache = {};
+
+function drawImage(ctx, d) {
+    if (d.url in image_cache) {
+        ctx.drawImage(image_cache[d.url], d.start[0], d.start[1]);
+        return;
+    }
+
+    image_cache[d.url] = new Image();
+    image_cache[d.url].onload = function() {
+        ctx.drawImage(image_cache[d.url], d.start[0], d.start[1]);
+    };
+    image_cache[d.url].src = d.url;
+}
+
 function drawBgLayer(layername, canvas, layer, scalefactor, edgeColor, polygonColor, textColor) {
   var ctx = canvas.getContext("2d");
   for (var d of pcbdata.drawings[layername][layer]) {
@@ -415,6 +430,8 @@ function drawBgLayer(layername, canvas, layer, scalefactor, edgeColor, polygonCo
       drawedge(ctx, scalefactor, d, edgeColor);
     } else if (d.type == "polygon") {
       drawPolygonShape(ctx, scalefactor, d, polygonColor);
+    } else if (d.type == "url") {
+        drawImage(ctx, d);
     } else {
       drawText(ctx, d, textColor);
     }
