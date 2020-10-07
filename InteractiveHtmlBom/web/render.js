@@ -515,10 +515,12 @@ function prepareCanvas(canvas, flip, transform) {
   ctx.scale(transform.zoom, transform.zoom);
   ctx.translate(transform.panx, transform.pany);
   if (flip) {
-    ctx.scale(-1, 1);
+    ctx.rotate(deg2rad(settings.boardRotation + 180.));
+  } else {
+    ctx.rotate(deg2rad(settings.boardRotation));
   }
+
   ctx.translate(transform.x, transform.y);
-  ctx.rotate(deg2rad(settings.boardRotation));
   ctx.scale(transform.s, transform.s);
 }
 
